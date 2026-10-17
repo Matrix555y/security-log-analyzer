@@ -1,0 +1,7 @@
+[INFO] Server started
+[INFO] User john logged in 
+[WARNING] Multiple login attempts detected 
+[ERROR] Failed login for user admin 
+[WARNING] Disk space is getting low 
+[ERROR] Configuration file missing 
+[DEBUG] Database connection checked 
