@@ -1,4 +1,4 @@
-from analyzer import count_events
+from analyzer import count_events, find_repeated_failed_logins
 
 
 def test_count_events():
@@ -49,4 +49,37 @@ test_count_events()
 test_empty_log()
 test_blank_lines()
 
-print("All 3 tests passed!")
+
+def test_repeated_failed_logins():
+    log_lines =[
+        "[ERROR] Failed login for user admin",
+        "[ERROR] Failed login for user admin",
+        "[ERROR] Failed login for user admin", 
+        "[ERROR] Failed login for user guest",  
+    ]
+
+    result = find_repeated_failed_logins(log_lines)
+
+    assert result == {"admin":3}
+
+def test_no_repeated_failed_logins():
+    log_lines= [
+        "[ERROR] Failed login for user admin",
+        "[ERROR] Failed login for user guest",
+    ]
+
+    result = find_repeated_failed_logins(log_lines)
+
+    assert result =={}
+
+
+def test_empty_log_for_failed_logins():
+    result = find_repeated_failed_logins([])
+
+    assert result == {}
+
+    test_repeated_failed_logins()
+    test_no_repeated_failed_logins()
+    test_empty_log_for_failed_logins()
+
+print("All 6 tests passed!")

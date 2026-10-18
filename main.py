@@ -1,6 +1,6 @@
 
 from pathlib import Path
-from analyzer import count_events
+from analyzer import count_events, find_repeated_failed_logins
 
 # Find files next to this script
 project_dir = Path(__file__).parent
@@ -10,7 +10,10 @@ report_file = project_dir / "report.txt"
 # Read and analyze the log
 try:
     with log_file.open("r", encoding="utf-8") as file:
-        counts, error_lines, unknown_lines = count_events(file)
+        log_lines = file.readlines()
+
+        counts, error_lines, unknown_lines = count_events(log_lines)
+        repeated_logins = find_repeated_failed_logins(log_lines)
 
 except OSError as error:
     print(f"Could not read log file: {error}")
@@ -42,6 +45,18 @@ if unknown_lines:
 
 if total_events == 0 and not unknown_lines:
     report_lines.extend(["", "The log file is empty."])
+
+report_lines.extend(["","=== Repeated failed logins ==="])
+
+if repeated_logins:
+    for username,attempts in repeated_logins.items():
+        report_lines.append(
+            f"Repeated failed logins detected for user {username}"
+        )
+        report_lines.append(f"Failed attempts: {attempts}")
+else:
+    report_lines.append("No repeated failed logins detected.")
+
 
 # Display the report
 print("\n".join(report_lines))

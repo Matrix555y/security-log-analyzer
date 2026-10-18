@@ -29,3 +29,27 @@ def count_events(log_lines):
             unknown_lines.append(line)
 
     return counts, error_lines, unknown_lines
+
+
+def find_repeated_failed_logins(log_lines, threshold=3):
+    failed_logins ={}
+
+    for line in log_lines:
+        line =line.strip()
+
+        marker = "Failed login for user "
+
+
+        if marker in line:
+            username = line.split(marker,1)[1].strip()
+
+            if username:
+                failed_logins[username] = failed_logins.get(username,0)+1
+
+    repeated_logins = {}
+
+    for username, attempts in failed_logins.items():
+        if attempts >= threshold:
+            repeated_logins[username]= attempts
+
+    return repeated_logins 
