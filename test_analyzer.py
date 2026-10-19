@@ -1,4 +1,4 @@
-from analyzer import count_events, find_repeated_failed_logins
+from analyzer import count_events, find_repeated_failed_logins, calculate_risk
 
 
 def test_count_events():
@@ -82,4 +82,29 @@ def test_empty_log_for_failed_logins():
     test_no_repeated_failed_logins()
     test_empty_log_for_failed_logins()
 
-print("All 6 tests passed!")
+
+def test_calculate_risk():
+    assert calculate_risk("INFO") == "LOW"
+    assert calculate_risk("WARNING") == "MEDIUM"
+    assert calculate_risk("ERROR") == "HIGH"
+    assert calculate_risk("DEBUG") == "UNKNOWN"
+
+    test_calculate_risk()    
+
+
+def test_risk_for_failed_login():
+    assert calculate_risk(
+        "ERROR", "Failed login for user admin"
+    ) == "HIGH"
+
+
+def test_risk_for_configuration_error():
+    assert calculate_risk(
+        "ERROR", "Configuration file missing"
+    ) == "MEDIUM"
+
+
+test_risk_for_failed_login()
+test_risk_for_configuration_error()
+
+print("All 9 tests passed!")

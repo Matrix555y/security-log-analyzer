@@ -53,3 +53,25 @@ def find_repeated_failed_logins(log_lines, threshold=3):
             repeated_logins[username]= attempts
 
     return repeated_logins 
+
+
+
+
+def calculate_risk(event_type, message=""):
+    if event_type == "INFO":
+        return "LOW"
+
+    elif event_type == "WARNING":
+        return "MEDIUM"
+
+    elif event_type == "ERROR":
+        if "Failed login" in message:
+            return "HIGH"
+        else:
+            return "MEDIUM"
+
+    else:
+        return "UNKNOWN"
+
+
+

@@ -1,6 +1,6 @@
 
 from pathlib import Path
-from analyzer import count_events, find_repeated_failed_logins
+from analyzer import count_events, find_repeated_failed_logins, calculate_risk
 
 # Find files next to this script
 project_dir = Path(__file__).parent
@@ -31,6 +31,30 @@ report_lines = [
 
 for event_type, total in counts.items():
     report_lines.append(f"{event_type}: {total}")
+
+
+report_lines.extend(["", "=== Event risk levels ==="])
+
+for line in log_lines:
+    line = line.strip()
+
+    if not line:
+        continue
+
+    if line.startswith("[INFO]"):
+        event_type = "INFO"
+    elif line.startswith("[WARNING]"):
+        event_type = "WARNING"
+    elif line.startswith("[ERROR]"):
+        event_type = "ERROR"
+    else:
+        event_type = "UNKNOWN"
+
+    message = line.split("]", 1)[1].strip() if "]" in line else line
+    risk = calculate_risk(event_type, message)
+
+    report_lines.append(f"{risk}: {line}")
+
 
 report_lines.extend(["", "=== Errors found ==="])
 
